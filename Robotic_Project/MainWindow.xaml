@@ -1,0 +1,316 @@
+﻿<Controls:MetroWindow
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Robotic_Project"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing" x:Name="metroWindow"  x:Class="Robotic_Project.MainWindow"
+        mc:Ignorable="d"
+        Title="Arduino Control" Height="807" Width="1184" Background="#FF2E2F44"
+    
+        BorderBrush="{DynamicResource AccentColorBrush}"
+                      BorderThickness="1" ResizeMode="NoResize" ShowTitleBar="False" Loaded="metroWindow_Loaded">
+    <Controls:MetroWindow.Resources>
+        <Storyboard x:Key="Needle" RepeatBehavior="Forever">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="needle">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:3" Value="360"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="SelectedGaugeUP">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="GaugeBar_1">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="1.1"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="GaugeBar_1">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="1.4"/>
+            </DoubleAnimationUsingKeyFrames>
+            <PointAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransformOrigin)" Storyboard.TargetName="GaugeBar_1">
+                <EasingPointKeyFrame KeyTime="0:0:0.1" Value="0.5,0.9"/>
+            </PointAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="SelectedGaugeDOWN">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="GaugeBar_1">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="GaugeBar_1">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="BluetoothOnline">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.OpacityMask).(Brush.Opacity)" Storyboard.TargetName="imgbluetoothOnline">
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="BluetoothOFFLINE">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.OpacityMask).(Brush.Opacity)" Storyboard.TargetName="imgbluetoothOnline">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+    </Controls:MetroWindow.Resources>
+    <Controls:MetroWindow.Triggers>
+        <EventTrigger RoutedEvent="UIElement.MouseEnter" SourceName="GaugeBar_1">
+            <BeginStoryboard x:Name="SelectedGaugeUP_BeginStoryboard1" Storyboard="{StaticResource SelectedGaugeUP}"/>
+        </EventTrigger>
+        <EventTrigger RoutedEvent="UIElement.MouseLeave" SourceName="GaugeBar_1">
+            <BeginStoryboard x:Name="SelectedGaugeDOWN_BeginStoryboard1" Storyboard="{StaticResource SelectedGaugeDOWN}"/>
+        </EventTrigger>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded"/>
+        <EventTrigger RoutedEvent="ToggleButton.Checked" SourceName="toggleSwitchButton">
+            <BeginStoryboard x:Name="BluetoothOnline_BeginStoryboard1" Storyboard="{StaticResource BluetoothOnline}"/>
+        </EventTrigger>
+        <EventTrigger RoutedEvent="ToggleButton.Unchecked" SourceName="toggleSwitchButton">
+            <BeginStoryboard x:Name="BluetoothOFFLINE_BeginStoryboard1" Storyboard="{StaticResource BluetoothOFFLINE}"/>
+        </EventTrigger>
+    </Controls:MetroWindow.Triggers>
+
+
+
+    <Grid>
+        <Button x:Name="button" Click="button_Click" Content="Send" Margin="235,0,0,296" VerticalAlignment="Bottom" Height="35" HorizontalAlignment="Left" Width="200" FontSize="18" Background="#FFF7F7F7"/>
+        <Button x:Name="button_Copy" Click="button_Copy_Click" Content="send" Margin="0,0,226,296" VerticalAlignment="Bottom" Height="35" HorizontalAlignment="Right" Width="200" FontSize="18"/>
+        <TextBox x:Name="tbxGauge1" HorizontalAlignment="Left" Margin="235,385,0,351" TextWrapping="Wrap" Width="200" FontSize="24" Controls:TextBoxHelper.Watermark="Enter Value 0-9" Height="40" TextAlignment="Center"/>
+        <TextBox x:Name="tbxGauge2" HorizontalAlignment="Right" Margin="0,385,226,351" TextWrapping="Wrap" Width="200" FontSize="24" Controls:TextBoxHelper.Watermark="Enter Value 0-9" Height="40" TextAlignment="Center"/>
+        <Image x:Name="image" Height="141" Margin="10,0,0,25" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="200" Source="Arduino_Logo.png"/>
+        <TextBlock x:Name="tbxbluetoothState" HorizontalAlignment="Right" Margin="0,0,7.377,30" TextWrapping="Wrap" Text="OFFLINE" VerticalAlignment="Bottom" Foreground="Gray" Height="25" Width="215" FontSize="20" TextAlignment="Center"/>
+        <Grid x:Name="Gauge_1" HorizontalAlignment="Left" Height="280" Margin="190,70,0,0" VerticalAlignment="Top" Width="280" d:IsLocked="True">
+            <Image x:Name="mainframe" Source="GaugeMainFrame_3.png" RenderTransformOrigin="0.5,0.5" Visibility="Visible"/>
+            <Image x:Name="needle" Height="30" Margin="125,57.5,125,0" VerticalAlignment="Top" Source="NewNeedle.png" RenderTransformOrigin="0.5,2.75">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <TextBlock x:Name="tbxClockValue_1" Margin="60,105,60,114.041" TextWrapping="Wrap" Text="0" FontSize="48" Foreground="#FFFFC350" TextAlignment="Center" FontWeight="Bold"/>
+            <Image x:Name="GaugeBar_1" RenderOptions.BitmapScalingMode="Fant" Height="35" Margin="101.5,0" VerticalAlignment="Top" Source="Untitled-3.png" RenderTransformOrigin="0.5,0.9">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="GaugeBar_2" RenderOptions.BitmapScalingMode="Fant" Height="35" Margin="101.5,0" VerticalAlignment="Top" Source="Untitled-3.png" RenderTransformOrigin="0.5,0.9">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="36"/>
+                        <TranslateTransform X="63.805" Y="20.742"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="GaugeBar_3" RenderOptions.BitmapScalingMode="Fant" Height="35" Margin="101.5,0" VerticalAlignment="Top" Source="Untitled-3.png" RenderTransformOrigin="0.5,0.9">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="72"/>
+                        <TranslateTransform X="103.187" Y="74.971"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="GaugeBar_4" RenderOptions.BitmapScalingMode="Fant" Height="35" Margin="101.5,0" VerticalAlignment="Top" Source="Untitled-3.png" RenderTransformOrigin="0.5,0.9">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="108"/>
+                        <TranslateTransform X="103.209" Y="142.025"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="GaugeBar_5" RenderOptions.BitmapScalingMode="Fant" Height="35" Margin="101.5,0" VerticalAlignment="Top" Source="Untitled-3.png" RenderTransformOrigin="0.5,0.9">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="144"/>
+                        <TranslateTransform X="63.774" Y="196.275"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="GaugeBar_6" RenderOptions.BitmapScalingMode="Fant" Height="35" Margin="101.5,0" VerticalAlignment="Top" Source="Untitled-3.png" RenderTransformOrigin="0.5,0.9">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="180"/>
+                        <TranslateTransform Y="217"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="GaugeBar_7" RenderOptions.BitmapScalingMode="Fant" Height="35" Margin="101.5,0" VerticalAlignment="Top" Source="Untitled-3.png" RenderTransformOrigin="0.5,0.9">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="216"/>
+                        <TranslateTransform X="-63.782" Y="196.273"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="GaugeBar_8" RenderOptions.BitmapScalingMode="Fant" Height="35" Margin="101.5,0" VerticalAlignment="Top" Source="Untitled-3.png" RenderTransformOrigin="0.5,0.9">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleY="1" ScaleX="1"/>
+                        <SkewTransform AngleY="0" AngleX="0"/>
+                        <RotateTransform Angle="252"/>
+                        <TranslateTransform X="-103.187" Y="142.033"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="GaugeBar_9" RenderOptions.BitmapScalingMode="Fant" Height="35" Margin="101.5,0" VerticalAlignment="Top" Source="Untitled-3.png" RenderTransformOrigin="0.5,0.9">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="288"/>
+                        <TranslateTransform X="-103.19" Y="74.976"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="GaugeBar_10" RenderOptions.BitmapScalingMode="Fant" Height="35" Margin="101.5,0" VerticalAlignment="Top" Source="Untitled-3.png" RenderTransformOrigin="0.5,0.9">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="324"/>
+                        <TranslateTransform X="-63.773" Y="20.721"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+        </Grid>
+        <Grid x:Name="Gauge_2" HorizontalAlignment="Right" Height="280" Margin="0,70,190,0" VerticalAlignment="Top" Width="280" d:IsLocked="True">
+            <Image x:Name="mainframe1" Source="GaugeMainFrame_3.png" RenderTransformOrigin="0.5,0.5" Visibility="Visible"/>
+            <Image x:Name="needle_2" Height="30" Margin="125,57.5,125,0" VerticalAlignment="Top" Source="NewNeedle.png" RenderTransformOrigin="0.5,2.75">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <TextBlock x:Name="tbxClockValue_2" Margin="60,105,60,114.041" TextWrapping="Wrap" Text="0" FontSize="48" Foreground="#FFFFC350" TextAlignment="Center" FontWeight="Bold"/>
+            <Image x:Name="GaugeBar_11" RenderOptions.BitmapScalingMode="Fant" Height="35" Margin="101.5,0" VerticalAlignment="Top" Source="Untitled-3.png" RenderTransformOrigin="0.5,0.9">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="GaugeBar_12" RenderOptions.BitmapScalingMode="Fant" Height="35" Margin="101.5,0" VerticalAlignment="Top" Source="Untitled-3.png" RenderTransformOrigin="0.5,0.9">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="36"/>
+                        <TranslateTransform X="63.805" Y="20.742"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="GaugeBar_13" RenderOptions.BitmapScalingMode="Fant" Height="35" Margin="101.5,0" VerticalAlignment="Top" Source="Untitled-3.png" RenderTransformOrigin="0.5,0.9">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="72"/>
+                        <TranslateTransform X="103.187" Y="74.971"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="GaugeBar_14" RenderOptions.BitmapScalingMode="Fant" Height="35" Margin="101.5,0" VerticalAlignment="Top" Source="Untitled-3.png" RenderTransformOrigin="0.5,0.9">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="108"/>
+                        <TranslateTransform X="103.209" Y="142.025"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="GaugeBar_15" RenderOptions.BitmapScalingMode="Fant" Height="35" Margin="101.5,0" VerticalAlignment="Top" Source="Untitled-3.png" RenderTransformOrigin="0.5,0.9">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="144"/>
+                        <TranslateTransform X="63.774" Y="196.275"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="GaugeBar_16" RenderOptions.BitmapScalingMode="Fant" Height="35" Margin="101.5,0" VerticalAlignment="Top" Source="Untitled-3.png" RenderTransformOrigin="0.5,0.9">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="180"/>
+                        <TranslateTransform Y="217"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="GaugeBar_17" RenderOptions.BitmapScalingMode="Fant" Height="35" Margin="101.5,0" VerticalAlignment="Top" Source="Untitled-3.png" RenderTransformOrigin="0.5,0.9">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="216"/>
+                        <TranslateTransform X="-63.782" Y="196.273"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="GaugeBar_18" RenderOptions.BitmapScalingMode="Fant" Height="35" Margin="101.5,0" VerticalAlignment="Top" Source="Untitled-3.png" RenderTransformOrigin="0.5,0.9">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleY="1" ScaleX="1"/>
+                        <SkewTransform AngleY="0" AngleX="0"/>
+                        <RotateTransform Angle="252"/>
+                        <TranslateTransform X="-103.187" Y="142.033"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="GaugeBar_19" RenderOptions.BitmapScalingMode="Fant" Height="35" Margin="101.5,0" VerticalAlignment="Top" Source="Untitled-3.png" RenderTransformOrigin="0.5,0.9">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="288"/>
+                        <TranslateTransform X="-103.19" Y="74.976"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="GaugeBar_20" RenderOptions.BitmapScalingMode="Fant" Height="35" Margin="101.5,0" VerticalAlignment="Top" Source="Untitled-3.png" RenderTransformOrigin="0.5,0.9">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="324"/>
+                        <TranslateTransform X="-63.773" Y="20.721"/>
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+        </Grid>
+        <TextBlock x:Name="textBlock1" Margin="10,10,0,0" TextWrapping="Wrap" Text="Robotics Final Project" VerticalAlignment="Top" Height="29.96" Foreground="#FF2EE7FF" FontSize="22" HorizontalAlignment="Left" Width="215"/>
+        <RichTextBox x:Name="richTextBox" Height="200" Margin="445,0,441,0" VerticalAlignment="Bottom" BorderBrush="{x:Null}" Width="300" FontSize="18" Background="#FF2E2F44" Foreground="#FF00979C" IsHitTestVisible="False" Block.LineHeight="1" d:IsLocked="True"/>
+        <Image x:Name="imgbluetoothOffline" Height="155" Margin="0,0,7.377,25" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="215" Source="bluetooth_3.png"/>
+        <Image x:Name="imgbluetoothOnline" Height="155" Margin="0,0,7.377,25" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="215" Source="bluetooth_5.png">
+            <Image.OpacityMask>
+                <SolidColorBrush Color="Black" Opacity="0"/>
+            </Image.OpacityMask>
+        </Image>
+        <Controls:ToggleSwitchButton x:Name="toggleSwitchButton" Content="ToggleSwitchButton" HorizontalAlignment="Right" Margin="0,0,41,180" VerticalAlignment="Bottom" d:LayoutOverrides="Height" Width="150" Checked="toggleSwitchButton_Checked" Unchecked="toggleSwitchButton_Unchecked"/>
+        <Button x:Name="button1" Click="button1_Click" Content="Button" Margin="520,385,516,351"/>
+        <Button x:Name="button1_Copy" Click="button1_Copy_Click" Content="connect" Margin="520,0,516,296" Height="40" VerticalAlignment="Bottom"/>
+    </Grid>
+</Controls:MetroWindow>
